@@ -40,6 +40,8 @@ PAGE_OVERLAY_LOADING = "wifi_scaning"
 
 PAGE_LIGHTS = "lights"
 
+PAGE_ERROR = "display_error"
+
 
 def format_temp(value):
     if value is None:

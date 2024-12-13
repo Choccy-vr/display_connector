@@ -35,6 +35,7 @@ from src.mapping import (
     PAGE_OVERLAY_LOADING,
     PAGE_LIGHTS,
     PAGE_SHUTDOWN_DIALOG,
+    PAGE_ERROR,
     format_temp,
     format_time,
     format_percent,
@@ -78,6 +79,7 @@ class OpenNeptuneDisplayMapper(Mapper):
         PAGE_PRINTING_DIALOG_FLOW: "flow_speed",
         PAGE_OVERLAY_LOADING: "wifi_scaning",
         PAGE_LIGHTS: "led",
+        PAGE_ERROR: "display_error",
     }
 
     def __init__(self) -> None:
@@ -323,6 +325,9 @@ class OpenNeptuneDisplayCommunicator(ElegooDisplayCommunicator):
 
     bed_leveling_box_size = 20
 
+    async def update_error_screen_ui(self, error_message):
+        await self.write(f'{self.mapper.map_page(PAGE_ERROR)}.error_message.txt="{error_message}"')
+    
     async def special_page_handling(self, current_page):
         if current_page == PAGE_MAIN:
             has_wifi = await self.update_wifi_ui()

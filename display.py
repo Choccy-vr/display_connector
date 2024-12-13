@@ -58,6 +58,7 @@ from src.mapping import (
     PAGE_PRINTING_SPEED,
     PAGE_PRINTING_ADJUST,
     PAGE_OVERLAY_LOADING,
+    PAGE_ERROR,
     format_time,
 )
 from src.colors import BACKGROUND_SUCCESS, BACKGROUND_WARNING
@@ -1200,7 +1201,9 @@ class DisplayController:
             self._loop.create_task(self.display.update_time_remaining(remaining_time))
 
         self._update_misc_states(new_data, data_mapping)
-
+    async def navigate_to_error_screen(self, error_message):
+        await self.display.update_error_screen_ui(error_message)
+        await self._navigate_to_page(PAGE_ERROR)
     def _update_misc_states(self, new_data, data_mapping):
         # Handle other updates: lights, fans, filament sensor, etc.
         if (
@@ -1312,7 +1315,9 @@ class DisplayController:
             "printer.gcode.script", {"script": "CALIBRATE_PROBE_Z_OFFSET"}
         )
         self._go_back()
-
+    async def navigate_to_error_screen(self, error_message):
+        await self.display.update_error_screen_ui(error_message)
+        await self._navigate_to_page(PAGE_ERROR)
     def handle_gcode_response(self, response):
         if self.leveling_mode == "screw":
             if "probe at" in response:
@@ -1442,6 +1447,7 @@ try:
 except Exception as e:
     logger.error("Error communicating...: " + str(e))
     logger.error(traceback.format_exc())
+
 finally:
     config_observer.stop()
     config_observer.join()
